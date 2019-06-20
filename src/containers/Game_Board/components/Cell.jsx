@@ -15,6 +15,17 @@ class Cell extends PureComponent {
       value: snakeFound?CellStates.HAVE_SNAKE:CellStates.HAVE_NOTHING
     };
   }
+
+  componentDidUpdate(prevProps,prevState){
+      console.log("The prev props",prevProps)
+      let snakeFound = this.props.snake.findIndex((snakeHead)=>{
+         return snakeHead.row == this.state.row && snakeHead.column === this.state.column
+        }) >-1;
+        if(snakeFound)
+        this.setState({value:CellStates.HAVE_SNAKE})
+        else if(this.state.value == CellStates.HAVE_SNAKE)
+        this.setState({value:CellStates.HAVE_NOTHING})
+  }
   
   render() {
     const { value } = this.state;
