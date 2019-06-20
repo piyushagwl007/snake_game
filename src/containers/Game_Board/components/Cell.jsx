@@ -1,13 +1,18 @@
-import React, { PureComponent } from 'react'
-
+import React, { PureComponent } from "react";
+import CellStates from "../../../constants/CellStates";
 class Cell extends PureComponent {
-    render() {
-        return (
-            <div className="cell">
-                
-            </div>
-        )
-    }
+  constructor(props) {
+    super();
+    this.state = {
+      row: props.row,
+      column: props.column,
+      value: CellStates.HAVE_NOTHING
+    };
+  }
+  render() {
+    const { value } = this.state;
+    return <div className="cell">{value}</div>;
+  }
 }
 
-export default Cell
+export default Cell;

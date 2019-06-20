@@ -1,6 +1,6 @@
 import React from "react";
-
-const index = () => {
-  return <div />;
+import Board from "./components/Board";
+const index = ({ board_size }) => {
+  return <Board size={board_size} />;
 };
-export default index
+export default index;
