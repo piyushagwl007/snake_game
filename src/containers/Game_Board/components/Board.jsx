@@ -10,13 +10,15 @@ class Board extends PureComponent {
   }
 
   render() {
+    const snake = [{row:1,column:1},{row:1,column:2}]
     const { rows, columns } = this.state;
     const totalCells = rows * columns;
     const cellUnits = [...Array(totalCells)].map((v, idx) => {
-      console.log("Rendering", idx);
-      const row = idx % rows;
+      
+      const row = Math.floor(idx / columns);
       const column = idx % columns;
-      return <Cell row={row} column={column} key={idx}/>;
+      console.log("Rendering", idx," Row is",row, "Column is",column);
+      return <Cell row={row} column={column} key={idx} snake={snake}/>;
     });
     return <div className="main-game-board">{cellUnits}</div>;
   }
