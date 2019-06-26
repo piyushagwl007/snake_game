@@ -36,7 +36,9 @@ class Board extends PureComponent {
     const intervalId = setInterval(this.moveSnake,100)
     this.setState({intervalId:intervalId})
   }
-
+  componentWillUnmount(){
+    clearInterval(this.state.intervalId)
+  }
   render() {
     const { rows, columns, snake } = this.state;
     const totalCells = rows * columns;
