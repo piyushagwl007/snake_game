@@ -7,10 +7,12 @@ class Board extends PureComponent {
       rows: props.size.rows,
       columns: props.size.columns,
       snake: [{ row: 1, column: 2 }, { row: 1, column: 1 }],
-      intervalId: null
+      intervalId: null,
+      foodPos:{row:8,column:2}
     };
     this.moveSnake = this.moveSnake.bind(this);
     this.growSnake = this.growSnake.bind(this);
+    this.generateFood = this.generateFood.bind(this)
   }
 
   moveSnake() {
@@ -28,6 +30,7 @@ class Board extends PureComponent {
     this.setState({ snake: newSnake2 });
   }
   growSnake() {
+    this.generateFood()
     const newSnake = this.state.snake.concat([this.state.snake[0]]);
 
     this.setState({ snake: newSnake });
@@ -39,17 +42,25 @@ class Board extends PureComponent {
   componentWillUnmount(){
     clearInterval(this.state.intervalId)
   }
+  generateFood () {
+    let row = Math.floor(Math.random() * Math.floor(this.state.rows));
+    let column = Math.floor(Math.random() * Math.floor(this.state.columns));
+    let foodPos = {row,column}
+    console.log("FOOD POSITION IS",foodPos)
+    this.setState({foodPos})
+  }
   render() {
-    const { rows, columns, snake } = this.state;
+    const { rows, columns, snake , foodPos } = this.state;
     const totalCells = rows * columns;
     const cellUnits = [...Array(totalCells)].map((v, idx) => {
-      const row = Math.floor(idx / columns);
-      const column = idx % columns;
+    const row = Math.floor(idx / columns);
+    const column = idx % columns;
+    const foodCell = row == foodPos.row && column == foodPos.column
       // console.log("Rendering", idx," Row is",row, "Column is",column);
-      return <Cell row={row} column={column} key={idx} snake={snake} />;
+      return <Cell row={row} column={column} key={idx} snake={snake} foodCell={foodCell}/>;
     });
     return (
-      <div className="main-game-board" onDoubleClick={this.growSnake}>
+      <div className="main-game-board" onDoubleClick={this.growSnake} >
         {cellUnits}
       </div>
     );
