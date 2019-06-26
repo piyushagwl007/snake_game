@@ -7,7 +7,7 @@ class Cell extends PureComponent {
       props.snake.findIndex(snakeHead => {
         // if(snakeHead.row == props.row && snakeHead.column === props.column)
         // console.log("HERE==>>",snakeHead.row , props.row,  snakeHead.column, props.column)
-        return snakeHead.row == props.row && snakeHead.column === props.column;
+        return snakeHead.row === props.row && snakeHead.column === props.column;
       }) > -1;
 
     this.state = {
@@ -22,7 +22,7 @@ class Cell extends PureComponent {
     let snakeFound =
       this.props.snake.findIndex(snakeHead => {
         return (
-          snakeHead.row == this.state.row &&
+          snakeHead.row === this.state.row &&
           snakeHead.column === this.state.column
         );
       }) > -1;

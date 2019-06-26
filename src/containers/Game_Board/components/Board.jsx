@@ -55,7 +55,7 @@ class Board extends PureComponent {
     const cellUnits = [...Array(totalCells)].map((v, idx) => {
     const row = Math.floor(idx / columns);
     const column = idx % columns;
-    const foodCell = row == foodPos.row && column == foodPos.column
+    const foodCell = row === foodPos.row && column === foodPos.column
       // console.log("Rendering", idx," Row is",row, "Column is",column);
       return <Cell row={row} column={column} key={idx} snake={snake} foodCell={foodCell}/>;
     });

@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import "./App.css";
 
+//Adding Redux Store
+import { Provider } from "react-redux";
+import redux_store from "./redux_store";
 //External Components
 import Board from "./containers/Game_Board";
 const size = {
@@ -10,9 +13,11 @@ const size = {
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <Board board_size={size} />
-      </div>
+      <Provider store={redux_store}>
+        <div className="App">
+          <Board board_size={size} />
+        </div>
+      </Provider>
     );
   }
 }
