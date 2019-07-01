@@ -1,5 +1,12 @@
 import React, { PureComponent } from "react";
 import Cell from "./Cell";
+
+//react reduct connector
+import { connect } from "react-redux";
+
+//actions for the board
+import { setSnake } from "../../../actions/Init";
+
 class Board extends PureComponent {
   constructor(props) {
     super();
@@ -13,6 +20,7 @@ class Board extends PureComponent {
     this.moveSnake = this.moveSnake.bind(this);
     this.growSnake = this.growSnake.bind(this);
     this.generateFood = this.generateFood.bind(this);
+    this.startTheGame = this.startTheGame.bind(this);
   }
 
   moveSnake() {
@@ -56,6 +64,11 @@ class Board extends PureComponent {
     });
     //initializing the board cells end
 
+    //starting game in 10 seconds
+    setTimeout(()=>{
+      this.startTheGame()
+    },5000)
+    
     const intervalId = setInterval(this.moveSnake, 100);
     this.setState({ intervalId: intervalId });
   }
@@ -69,6 +82,11 @@ class Board extends PureComponent {
     console.log("FOOD POSITION IS", foodPos);
     this.setState({ foodPos });
   }
+  startTheGame(){
+//initializing the snake in the redux store starts
+  this.props.setSnake(this.state.snake)
+//initializing the snake in the redux store end
+  }
   render() {
     return (
       <div className="main-game-board" onDoubleClick={this.growSnake}>
@@ -77,4 +95,8 @@ class Board extends PureComponent {
     );
   }
 }
-export default Board;
+const mapStateToProps = state => ({});
+export default connect(
+  mapStateToProps,
+  { setSnake }
+)(Board);
