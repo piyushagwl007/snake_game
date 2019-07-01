@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 
 //actions for the board
 import { setSnake, setFood } from "../../../actions/Init";
-
+import { moveSnake, increaseSnake } from "../../../actions/SnakeActions";
 class Board extends PureComponent {
   constructor(props) {
     super();
@@ -21,29 +21,6 @@ class Board extends PureComponent {
     this.growSnake = this.growSnake.bind(this);
     this.generateFood = this.generateFood.bind(this);
     this.startTheGame = this.startTheGame.bind(this);
-  }
-
-  moveSnake() {
-    const { columns } = this.state;
-    const newHead = {
-      row: this.state.snake[0].row,
-      column: (this.state.snake[0].column + 1) % columns
-    };
-
-    const snakelength = this.state.snake.length;
-    let newSnake2 = this.state.snake.slice(0, snakelength - 1);
-
-    newSnake2.unshift(newHead);
-
-    this.setState({ snake: newSnake2 });
-  }
-  growSnake() {
-    this.generateFood();
-    const newSnake = this.state.snake.concat([this.state.snake[0]]);
-
-    this.setState({ snake: newSnake });
-  }
-  componentDidMount() {
     //initializing the board cells start
     const { rows, columns, snake, foodPos } = this.state;
     const totalCells = rows * columns;
@@ -63,14 +40,32 @@ class Board extends PureComponent {
       );
     });
     //initializing the board cells end
+  }
 
+  moveSnake() {
+    // const { columns } = this.state;
+    // const newHead = {
+    //   row: this.state.snake[0].row,
+    //   column: (this.state.snake[0].column + 1) % columns
+    // };
+
+    // const snakelength = this.state.snake.length;
+    // let newSnake2 = this.state.snake.slice(0, snakelength - 1);
+
+    // newSnake2.unshift(newHead);
+
+    // this.setState({ snake: newSnake2 });
+    this.props.moveSnake();
+  }
+  growSnake() {
+    this.generateFood();
+    this.props.increaseSnake()
+  }
+  componentDidMount() {
     //starting game in 10 seconds
     setTimeout(() => {
       this.startTheGame();
     }, 5000);
-
-    const intervalId = setInterval(this.moveSnake, 100);
-    this.setState({ intervalId: intervalId });
   }
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
@@ -81,11 +76,14 @@ class Board extends PureComponent {
     let foodPos = { row, column };
     console.log("FOOD POSITION IS", foodPos);
     this.setState({ foodPos });
+    this.props.setFood(foodPos);
   }
   startTheGame() {
     //initializing the snake in the redux store starts
     this.props.setSnake(this.state.snake);
-    this.props.setFood(this.state.foodPos)
+    this.props.setFood(this.state.foodPos);
+    const intervalId = setInterval(this.moveSnake, 100);
+    this.setState({ intervalId: intervalId });
     //initializing the snake in the redux store end
   }
   render() {
@@ -99,5 +97,5 @@ class Board extends PureComponent {
 const mapStateToProps = state => ({});
 export default connect(
   mapStateToProps,
-  { setSnake, setFood }
+  { setSnake, setFood, moveSnake , increaseSnake}
 )(Board);

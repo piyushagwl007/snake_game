@@ -2,13 +2,17 @@ import { fromJS } from "immutable";
 import {
   INITIALIZE_CELL_STATE,
   INITIALIZE_SNAKE,
-  SET_FOOD_LOCATION
+  SET_FOOD_LOCATION,
+  MOVE_SNAKE,
+  INCREASE_SNAKE_LENGTH
 } from "../../constants/Actions";
 import CellStates from "../../constants/CellStates";
+import Directions from "../../constants/Directions"
 const initialState = fromJS({
   snake: [],
   cellMatrix: [],
-  foodPos: { row: null, column: null }
+  foodPos: { row: null, column: null },
+  direction:"RIGHT"
 });
 
 export default function(state = initialState, action) {
@@ -34,8 +38,25 @@ export default function(state = initialState, action) {
             .setIn(["foodPos","row"],foodRow)
             .setIn(["foodPos","column"],foodColumn)
             .setIn(["cellMatrix",foodRow,foodColumn],CellStates.HAVE_FOOD)
-                
+    
+    case  MOVE_SNAKE:
+          const snakeHeadRow = state.getIn(["snake",0,"row"])
+          const snakeHeadColumn = state.getIn(["snake",0,"column"])
+          const snakeTailRow = state.get("snake").last().get("row")
+          const snakeTailColumn = state.get("snake").last().get("column")
+          const moveHeadPosition = Directions[state.getIn(["direction"])]
+          const newHead = {
+              row: (snakeHeadRow +moveHeadPosition.row) %20,
+              column: (snakeHeadColumn +  moveHeadPosition.column) % 20
+            }; 
+          console.log("The snake tail info",snakeTailRow,snakeTailColumn,"The snake tail had",state.getIn(["cellMatrix",snakeTailRow,snakeTailColumn]))
+          return state
+                 .setIn(["cellMatrix",newHead.row,newHead.column],CellStates.HAVE_SNAKE)
+                 .setIn(["cellMatrix",snakeTailRow,snakeTailColumn],CellStates.HAVE_NOTHING)
+                 .updateIn(["snake"],snake => snake.pop().unshift(fromJS(newHead)))
 
+      case INCREASE_SNAKE_LENGTH :
+         return  state.updateIn(["snake"], snake => snake.push(fromJS(snake.get(0).toJS())))            
     default:
       return state;
   }
