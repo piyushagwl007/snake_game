@@ -5,7 +5,7 @@ import Cell from "./Cell";
 import { connect } from "react-redux";
 
 //actions for the board
-import { setSnake } from "../../../actions/Init";
+import { setSnake, setFood } from "../../../actions/Init";
 
 class Board extends PureComponent {
   constructor(props) {
@@ -65,10 +65,10 @@ class Board extends PureComponent {
     //initializing the board cells end
 
     //starting game in 10 seconds
-    setTimeout(()=>{
-      this.startTheGame()
-    },5000)
-    
+    setTimeout(() => {
+      this.startTheGame();
+    }, 5000);
+
     const intervalId = setInterval(this.moveSnake, 100);
     this.setState({ intervalId: intervalId });
   }
@@ -82,10 +82,11 @@ class Board extends PureComponent {
     console.log("FOOD POSITION IS", foodPos);
     this.setState({ foodPos });
   }
-  startTheGame(){
-//initializing the snake in the redux store starts
-  this.props.setSnake(this.state.snake)
-//initializing the snake in the redux store end
+  startTheGame() {
+    //initializing the snake in the redux store starts
+    this.props.setSnake(this.state.snake);
+    this.props.setFood(this.state.foodPos)
+    //initializing the snake in the redux store end
   }
   render() {
     return (
@@ -98,5 +99,5 @@ class Board extends PureComponent {
 const mapStateToProps = state => ({});
 export default connect(
   mapStateToProps,
-  { setSnake }
+  { setSnake, setFood }
 )(Board);
