@@ -6,7 +6,10 @@ import { connect } from "react-redux";
 
 //actions for the board
 import { setSnake, setFood } from "../../../actions/Init";
-import { moveSnake, increaseSnake } from "../../../actions/SnakeActions";
+import { moveSnake, increaseSnake , changeSnakeDirection} from "../../../actions/SnakeActions";
+
+//constants 
+import Directions from "../../../constants/Directions"
 class Board extends PureComponent {
   constructor(props) {
     super();
@@ -21,6 +24,7 @@ class Board extends PureComponent {
     this.growSnake = this.growSnake.bind(this);
     this.generateFood = this.generateFood.bind(this);
     this.startTheGame = this.startTheGame.bind(this);
+    this.keyPressed = this.keyPressed.bind(this);
     //initializing the board cells start
     const { rows, columns, snake, foodPos } = this.state;
     const totalCells = rows * columns;
@@ -28,7 +32,7 @@ class Board extends PureComponent {
       const row = Math.floor(idx / columns);
       const column = idx % columns;
       const foodCell = row === foodPos.row && column === foodPos.column;
-      // console.log("Rendering", idx," Row is",row, "Column is",column);
+      // // console.log("Rendering", idx," Row is",row, "Column is",column);
       return (
         <Cell
           row={row}
@@ -74,7 +78,7 @@ class Board extends PureComponent {
     let row = Math.floor(Math.random() * Math.floor(this.state.rows));
     let column = Math.floor(Math.random() * Math.floor(this.state.columns));
     let foodPos = { row, column };
-    console.log("FOOD POSITION IS", foodPos);
+    // // console.log("FOOD POSITION IS", foodPos);
     this.setState({ foodPos });
     this.props.setFood(foodPos);
   }
@@ -86,9 +90,35 @@ class Board extends PureComponent {
     this.setState({ intervalId: intervalId });
     //initializing the snake in the redux store end
   }
+
+  keyPressed(e){
+    e.stopPropagation();
+    console.log("KEY PRESSED",e)
+    switch (e.keyCode){
+      case 37:
+        //left key pressed
+        this.props.changeSnakeDirection(Directions.LEFT)
+        break;
+      case 39:
+        //right key pressed
+        this.props.changeSnakeDirection(Directions.RIGHT)
+        break;
+      case 38:
+        //up key pressed
+        this.props.changeSnakeDirection(Directions.UP)
+        break;
+      case 40:
+        ///down key pressed  
+        this.props.changeSnakeDirection(Directions.DOWN) 
+        break;   
+      default :
+      // DO NOTHING
+      break;  
+    }
+  }
   render() {
     return (
-      <div className="main-game-board" onDoubleClick={this.growSnake}>
+      <div className="main-game-board" onKeyDown={this.keyPressed} tabIndex="0">
         {this.cellUnits}
       </div>
     );
@@ -97,5 +127,5 @@ class Board extends PureComponent {
 const mapStateToProps = state => ({});
 export default connect(
   mapStateToProps,
-  { setSnake, setFood, moveSnake , increaseSnake}
+  { setSnake, setFood, moveSnake , increaseSnake , changeSnakeDirection}
 )(Board);

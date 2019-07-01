@@ -4,7 +4,8 @@ import {
   INITIALIZE_SNAKE,
   SET_FOOD_LOCATION,
   MOVE_SNAKE,
-  INCREASE_SNAKE_LENGTH
+  INCREASE_SNAKE_LENGTH,
+  CHANGE_SNAKE_DIRECTION
 } from "../../constants/Actions";
 import CellStates from "../../constants/CellStates";
 import Directions from "../../constants/Directions"
@@ -26,7 +27,7 @@ export default function(state = initialState, action) {
     case INITIALIZE_SNAKE:
       const snakeData = fromJS(action.payload);
       for (let i = 0; i < action.payload.length; i++) {
-        console.log("Initializing at ",action.payload[i])
+        // console.log("Initializing at ",action.payload[i])
         state = state.setIn(["cellMatrix",action.payload[i].row,action.payload[i].column],CellStates.HAVE_SNAKE)
       }
       return state.setIn(["snake"], snakeData);
@@ -49,7 +50,7 @@ export default function(state = initialState, action) {
               row: (snakeHeadRow +moveHeadPosition.row) %20,
               column: (snakeHeadColumn +  moveHeadPosition.column) % 20
             }; 
-          console.log("The snake tail info",snakeTailRow,snakeTailColumn,"The snake tail had",state.getIn(["cellMatrix",snakeTailRow,snakeTailColumn]))
+          // console.log("The snake tail info",snakeTailRow,snakeTailColumn,"The snake tail had",state.getIn(["cellMatrix",snakeTailRow,snakeTailColumn]))
           return state
                  .setIn(["cellMatrix",newHead.row,newHead.column],CellStates.HAVE_SNAKE)
                  .setIn(["cellMatrix",snakeTailRow,snakeTailColumn],CellStates.HAVE_NOTHING)
@@ -57,6 +58,9 @@ export default function(state = initialState, action) {
 
       case INCREASE_SNAKE_LENGTH :
          return  state.updateIn(["snake"], snake => snake.push(fromJS(snake.get(0).toJS())))            
+
+      case CHANGE_SNAKE_DIRECTION:
+        return state.set("direction",action.payload.value)   
     default:
       return state;
   }
