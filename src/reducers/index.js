@@ -1,2 +1,5 @@
 import { combineReducers } from "redux-immutable";
-export default combineReducers({});
+import SnakeBoardReducer from "./SnakeBoardReducer/SnakeBoard"
+export default combineReducers({
+    boardInfo:SnakeBoardReducer
+});

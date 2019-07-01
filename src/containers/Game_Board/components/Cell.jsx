@@ -1,10 +1,14 @@
 import React, { PureComponent } from "react";
 import CellStates from "../../../constants/CellStates";
+//react reduct connector
+import { connect } from 'react-redux'
+
+//selectors for the cell
+import {cellStateSelector} from "../../../selectors/CellStateSelector"
 class Cell extends PureComponent {
   constructor(props) {
     super();
-    let snakeFound =
-      props.snake.findIndex(snakeHead => {
+    let snakeFound = props.snake.findIndex(snakeHead => {
         // if(snakeHead.row == props.row && snakeHead.column === props.column)
         // console.log("HERE==>>",snakeHead.row , props.row,  snakeHead.column, props.column)
         return snakeHead.row === props.row && snakeHead.column === props.column;
@@ -38,5 +42,7 @@ class Cell extends PureComponent {
     return <div className="cell">{value}</div>;
   }
 }
-
-export default Cell;
+const mapStateToProps = (state,props) =>( {
+  cellState:cellStateSelector(state,props)
+})
+export default connect(mapStateToProps,{})(Cell)
