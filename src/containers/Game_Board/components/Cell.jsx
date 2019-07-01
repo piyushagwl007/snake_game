@@ -5,6 +5,9 @@ import { connect } from 'react-redux'
 
 //selectors for the cell
 import {cellStateSelector} from "../../../selectors/CellStateSelector"
+
+//actions for the cell
+import {initializeCell} from "../../../actions/Init"
 class Cell extends PureComponent {
   constructor(props) {
     super();
@@ -37,6 +40,12 @@ class Cell extends PureComponent {
       this.setState({ value: CellStates.HAVE_NOTHING });
   }
 
+  //Initializing the Cell Component
+  componentDidMount(){
+    const {row, column} = this.props ;
+    this.props.initializeCell({row,column})
+  }
+
   render() {
     const { value } = this.state;
     return <div className="cell">{value}</div>;
@@ -45,4 +54,4 @@ class Cell extends PureComponent {
 const mapStateToProps = (state,props) =>( {
   cellState:cellStateSelector(state,props)
 })
-export default connect(mapStateToProps,{})(Cell)
+export default connect(mapStateToProps,{initializeCell})(Cell)

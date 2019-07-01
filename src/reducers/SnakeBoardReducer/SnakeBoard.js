@@ -11,8 +11,8 @@ export default function(state = initialState, action) {
   switch (action.type) {
     case INITIALIZE_CELL_STATE:
       const { row, column } = action.payload;
-    return  state.setIn([row,column],CellStates.HAVE_NOTHING)
-      break
+    return  state.setIn(["cellMatrix",row,column],CellStates.HAVE_NOTHING)
+
     default:
       return state;
   }
