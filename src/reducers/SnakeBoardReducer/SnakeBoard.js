@@ -68,8 +68,8 @@ export default function(state = initialState, action) {
       if (
         state.getIn(["cellMatrix", newHead.row, newHead.column]) ===
           CellStates.HAVE_SNAKE &&
-        newHead.row != snakeTailRow &&
-        newHead.column != snakeTailColumn
+        newHead.row !== snakeTailRow &&
+        newHead.column !== snakeTailColumn
       )
         return state.setIn(["snakeOverlapped"], true);
 
@@ -96,6 +96,9 @@ export default function(state = initialState, action) {
       );
 
     case CHANGE_SNAKE_DIRECTION:
+      console.log("REQUESTED DIRECTION IS",Directions[action.payload.value])
+      if(Directions[action.payload.value].reverse === state.get("direction"))
+      return state
       return state.set("direction", action.payload.value);
     default:
       return state;
