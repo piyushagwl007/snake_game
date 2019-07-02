@@ -101,7 +101,7 @@ class Board extends PureComponent {
 
   keyPressed(e) {
     e.stopPropagation();
-    console.log("KEY PRESSED", e);
+    
     switch (e.keyCode) {
       case 37:
         //left key pressed

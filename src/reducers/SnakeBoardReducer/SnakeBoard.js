@@ -96,7 +96,6 @@ export default function(state = initialState, action) {
       );
 
     case CHANGE_SNAKE_DIRECTION:
-      console.log("REQUESTED DIRECTION IS",Directions[action.payload.value])
       if(Directions[action.payload.value].reverse === state.get("direction"))
       return state
       return state.set("direction", action.payload.value);
