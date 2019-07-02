@@ -14,7 +14,9 @@ const initialState = fromJS({
   snake: [],
   cellMatrix: [],
   foodPos: { row: null, column: null },
-  direction: "RIGHT"
+  direction: Directions.RIGHT.value,
+  score:0,
+  snakeOverlapped:false
 });
 
 export default function(state = initialState, action) {
@@ -43,6 +45,10 @@ export default function(state = initialState, action) {
         .setIn(["cellMatrix", foodRow, foodColumn], CellStates.HAVE_FOOD);
 
     case MOVE_SNAKE:
+      //DO NOT MOVE SNAKE IF SNAKE OVERLAPPED
+      if(state.get("snakeOverlapped"))
+      return state
+
       const snakeHeadRow = state.getIn(["snake", 0, "row"]);
       const snakeHeadColumn = state.getIn(["snake", 0, "column"]);
       const snakeTailRow = state
@@ -59,6 +65,9 @@ export default function(state = initialState, action) {
         column: getMod(snakeHeadColumn + moveHeadPosition.column, 20)
       };
       // console.log("The snake tail info",snakeTailRow,snakeTailColumn,"The snake tail had",state.getIn(["cellMatrix",snakeTailRow,snakeTailColumn]))
+      if(state.getIn(["foodPos","row"]) === newHead.row && state.getIn(["foodPos","column"]) ===newHead.column)
+      state = state.updateIn(["score"], score => score+10)
+      
       return state
         .setIn(
           ["cellMatrix", newHead.row, newHead.column],

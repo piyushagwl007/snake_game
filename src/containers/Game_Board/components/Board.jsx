@@ -3,13 +3,21 @@ import Cell from "./Cell";
 
 //react reduct connector
 import { connect } from "react-redux";
-
+//Selectors for the board
+import {
+  GameScoreSelector,
+  SnakeOverlappedSelector
+} from "../../../selectors/BoardGameState";
 //actions for the board
 import { setSnake, setFood } from "../../../actions/Init";
-import { moveSnake, increaseSnake , changeSnakeDirection} from "../../../actions/SnakeActions";
+import {
+  moveSnake,
+  increaseSnake,
+  changeSnakeDirection
+} from "../../../actions/SnakeActions";
 
-//constants 
-import Directions from "../../../constants/Directions"
+//constants
+import Directions from "../../../constants/Directions";
 class Board extends PureComponent {
   constructor(props) {
     super();
@@ -63,7 +71,7 @@ class Board extends PureComponent {
   }
   growSnake() {
     this.generateFood();
-    this.props.increaseSnake()
+    this.props.increaseSnake();
   }
   componentDidMount() {
     //starting game in 10 seconds
@@ -91,30 +99,35 @@ class Board extends PureComponent {
     //initializing the snake in the redux store end
   }
 
-  keyPressed(e){
+  keyPressed(e) {
     e.stopPropagation();
-    console.log("KEY PRESSED",e)
-    switch (e.keyCode){
+    console.log("KEY PRESSED", e);
+    switch (e.keyCode) {
       case 37:
         //left key pressed
-        this.props.changeSnakeDirection(Directions.LEFT)
+        this.props.changeSnakeDirection(Directions.LEFT);
         break;
       case 39:
         //right key pressed
-        this.props.changeSnakeDirection(Directions.RIGHT)
+        this.props.changeSnakeDirection(Directions.RIGHT);
         break;
       case 38:
         //up key pressed
-        this.props.changeSnakeDirection(Directions.UP)
+        this.props.changeSnakeDirection(Directions.UP);
         break;
       case 40:
-        ///down key pressed  
-        this.props.changeSnakeDirection(Directions.DOWN) 
-        break;   
-      default :
-      // DO NOTHING
-      break;  
+        ///down key pressed
+        this.props.changeSnakeDirection(Directions.DOWN);
+        break;
+      default:
+        // DO NOTHING
+        break;
     }
+  }
+
+  componentDidUpdate(prevProps,prevState) {
+    if(this.props.score > prevProps.score)
+    this.growSnake()
   }
   render() {
     return (
@@ -124,8 +137,11 @@ class Board extends PureComponent {
     );
   }
 }
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  score: GameScoreSelector(state),
+  snakeOverlapped: SnakeOverlappedSelector(state)
+});
 export default connect(
   mapStateToProps,
-  { setSnake, setFood, moveSnake , increaseSnake , changeSnakeDirection}
+  { setSnake, setFood, moveSnake, increaseSnake, changeSnakeDirection }
 )(Board);
