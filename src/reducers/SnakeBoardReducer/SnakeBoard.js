@@ -9,7 +9,7 @@ import {
 } from "../../constants/Actions";
 import CellStates from "../../constants/CellStates";
 import Directions from "../../constants/Directions";
-import { getMod } from "../../utility/helpFunctions";
+import { getMod ,checkIfSnakeOverlapped } from "../../utility/helpFunctions";
 const initialState = fromJS({
   snake: [],
   cellMatrix: [],
@@ -66,10 +66,7 @@ export default function(state = initialState, action) {
       // console.log("The snake tail info",snakeTailRow,snakeTailColumn,"The snake tail had",state.getIn(["cellMatrix",snakeTailRow,snakeTailColumn]))
       //checking if overlap is there because of snake
       if (
-        state.getIn(["cellMatrix", newHead.row, newHead.column]) ===
-          CellStates.HAVE_SNAKE &&
-        newHead.row !== snakeTailRow &&
-        newHead.column !== snakeTailColumn
+        checkIfSnakeOverlapped(state.get("snake"),newHead)
       )
         return state.setIn(["snakeOverlapped"], true);
 
@@ -103,3 +100,5 @@ export default function(state = initialState, action) {
       return state;
   }
 }
+
+
