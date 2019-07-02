@@ -92,7 +92,7 @@ export default function(state = initialState, action) {
 
     case INCREASE_SNAKE_LENGTH:
       return state.updateIn(["snake"], snake =>
-        snake.push(fromJS(snake.get(0).toJS()))
+        snake.push(fromJS(snake.last().toJS()))
       );
 
     case CHANGE_SNAKE_DIRECTION:
