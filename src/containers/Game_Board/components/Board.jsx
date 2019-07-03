@@ -1,4 +1,6 @@
 import React, { PureComponent } from "react";
+import ReactDOM from "react-dom";
+
 import Cell from "./Cell";
 
 //react reduct connector
@@ -6,7 +8,8 @@ import { connect } from "react-redux";
 //Selectors for the board
 import {
   GameScoreSelector,
-  SnakeOverlappedSelector
+  SnakeOverlappedSelector,
+  GameStartedSelector
 } from "../../../selectors/BoardGameState";
 //actions for the board
 import { setSnake, setFood } from "../../../actions/Init";
@@ -75,9 +78,9 @@ class Board extends PureComponent {
   }
   componentDidMount() {
     //starting game in 10 seconds
-    setTimeout(() => {
-      this.startTheGame();
-    }, 5000);
+    // setTimeout(() => {
+    //   this.startTheGame();
+    // }, 5000);
   }
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
@@ -91,6 +94,8 @@ class Board extends PureComponent {
     this.props.setFood(foodPos);
   }
   startTheGame() {
+    //focus the div
+    ReactDOM.findDOMNode(this.refs.theDiv).focus();
     //initializing the snake in the redux store starts
     this.props.setSnake(this.state.snake);
     this.props.setFood(this.state.foodPos);
@@ -128,10 +133,12 @@ class Board extends PureComponent {
   componentDidUpdate(prevProps,prevState) {
     if(this.props.score > prevProps.score)
     this.growSnake()
+    if(this.props.started && !prevProps.started)
+    this.startTheGame()
   }
   render() {
     return (
-      <div className="main-game-board" onKeyDown={this.keyPressed} tabIndex="0">
+      <div className="main-game-board" onKeyDown={this.keyPressed} tabIndex="0" ref="theDiv">
         {this.cellUnits}
       </div>
     );
@@ -139,7 +146,8 @@ class Board extends PureComponent {
 }
 const mapStateToProps = state => ({
   score: GameScoreSelector(state),
-  snakeOverlapped: SnakeOverlappedSelector(state)
+  snakeOverlapped: SnakeOverlappedSelector(state),
+  started:GameStartedSelector(state)
 });
 export default connect(
   mapStateToProps,

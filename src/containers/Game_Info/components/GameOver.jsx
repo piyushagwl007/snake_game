@@ -7,7 +7,7 @@ class GameOver extends Component {
     return (
       <div>
         {!over && <h3> GAME RUNNING</h3>}
-        {over && <h1>###### GAME OVER #####</h1>}
+        {over && <h3>###### GAME OVER #####</h3>}
       </div>
     );
   }

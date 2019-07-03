@@ -9,7 +9,11 @@ import {
 } from "../../constants/Actions";
 import CellStates from "../../constants/CellStates";
 import Directions from "../../constants/Directions";
-import { getMod ,checkIfSnakeOverlapped } from "../../utility/helpFunctions";
+import {
+  getMod,
+  checkIfSnakeOverlapped,
+  getNewFoodLocation
+} from "../../utility/helpFunctions";
 const initialState = fromJS({
   snake: [],
   cellMatrix: [],
@@ -37,12 +41,12 @@ export default function(state = initialState, action) {
       return state.setIn(["snake"], snakeData);
 
     case SET_FOOD_LOCATION:
-      const foodRow = action.payload.row;
-      const foodColumn = action.payload.column;
+      let foodLocation = getNewFoodLocation(state.get("snake"),action.payload)
+      
       return state
-        .setIn(["foodPos", "row"], foodRow)
-        .setIn(["foodPos", "column"], foodColumn)
-        .setIn(["cellMatrix", foodRow, foodColumn], CellStates.HAVE_FOOD);
+        .setIn(["foodPos", "row"], foodLocation.row)
+        .setIn(["foodPos", "column"], foodLocation.column)
+        .setIn(["cellMatrix", foodLocation.row, foodLocation.column], CellStates.HAVE_FOOD);
 
     case MOVE_SNAKE:
       //DO NOT MOVE SNAKE IF SNAKE OVERLAPPED
@@ -65,9 +69,7 @@ export default function(state = initialState, action) {
       };
       // console.log("The snake tail info",snakeTailRow,snakeTailColumn,"The snake tail had",state.getIn(["cellMatrix",snakeTailRow,snakeTailColumn]))
       //checking if overlap is there because of snake
-      if (
-        checkIfSnakeOverlapped(state.get("snake"),newHead)
-      )
+      if (checkIfSnakeOverlapped(state.get("snake"), newHead))
         return state.setIn(["snakeOverlapped"], true);
 
       if (
@@ -93,12 +95,10 @@ export default function(state = initialState, action) {
       );
 
     case CHANGE_SNAKE_DIRECTION:
-      if(Directions[action.payload.value].reverse === state.get("direction"))
-      return state
+      if (Directions[action.payload.value].reverse === state.get("direction"))
+        return state;
       return state.set("direction", action.payload.value);
     default:
       return state;
   }
 }
-
-
