@@ -49,7 +49,7 @@ class Cell extends PureComponent {
 
   render() {
     const { cellState } = this.props;
-    return <div className="cell">{cellState}</div>;
+    return <div className={"cell "+cellState}></div>;
   }
 }
 const mapStateToProps = (state,props) =>( {
