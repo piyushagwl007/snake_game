@@ -5,7 +5,8 @@ import {
   SET_FOOD_LOCATION,
   MOVE_SNAKE,
   INCREASE_SNAKE_LENGTH,
-  CHANGE_SNAKE_DIRECTION
+  CHANGE_SNAKE_DIRECTION,
+  STOP_THE_GAME
 } from "../../constants/Actions";
 import CellStates from "../../constants/CellStates";
 import Directions from "../../constants/Directions";
@@ -41,12 +42,15 @@ export default function(state = initialState, action) {
       return state.setIn(["snake"], snakeData);
 
     case SET_FOOD_LOCATION:
-      let foodLocation = getNewFoodLocation(state.get("snake"),action.payload)
-      
+      let foodLocation = getNewFoodLocation(state.get("snake"), action.payload);
+
       return state
         .setIn(["foodPos", "row"], foodLocation.row)
         .setIn(["foodPos", "column"], foodLocation.column)
-        .setIn(["cellMatrix", foodLocation.row, foodLocation.column], CellStates.HAVE_FOOD);
+        .setIn(
+          ["cellMatrix", foodLocation.row, foodLocation.column],
+          CellStates.HAVE_FOOD
+        );
 
     case MOVE_SNAKE:
       //DO NOT MOVE SNAKE IF SNAKE OVERLAPPED
@@ -98,6 +102,12 @@ export default function(state = initialState, action) {
       if (Directions[action.payload.value].reverse === state.get("direction"))
         return state;
       return state.set("direction", action.payload.value);
+
+    case STOP_THE_GAME:
+      return state
+        .set("direction", Directions.RIGHT.value)
+        .set("snakeOverlapped", false)
+        .set("score", 0);
     default:
       return state;
   }

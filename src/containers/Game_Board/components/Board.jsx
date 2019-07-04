@@ -36,25 +36,7 @@ class Board extends PureComponent {
     this.generateFood = this.generateFood.bind(this);
     this.startTheGame = this.startTheGame.bind(this);
     this.keyPressed = this.keyPressed.bind(this);
-    //initializing the board cells start
-    const { rows, columns, snake, foodPos } = this.state;
-    const totalCells = rows * columns;
-    this.cellUnits = [...Array(totalCells)].map((v, idx) => {
-      const row = Math.floor(idx / columns);
-      const column = idx % columns;
-      const foodCell = row === foodPos.row && column === foodPos.column;
-      // // console.log("Rendering", idx," Row is",row, "Column is",column);
-      return (
-        <Cell
-          row={row}
-          column={column}
-          key={idx}
-          snake={snake}
-          foodCell={foodCell}
-        />
-      );
-    });
-    //initializing the board cells end
+    this.initializeCells = this.initializeCells.bind(this);
   }
 
   moveSnake() {
@@ -81,6 +63,7 @@ class Board extends PureComponent {
     // setTimeout(() => {
     //   this.startTheGame();
     // }, 5000);
+    this.initializeCells()
   }
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
@@ -106,7 +89,7 @@ class Board extends PureComponent {
 
   keyPressed(e) {
     e.stopPropagation();
-    
+
     switch (e.keyCode) {
       case 37:
         //left key pressed
@@ -130,15 +113,49 @@ class Board extends PureComponent {
     }
   }
 
-  componentDidUpdate(prevProps,prevState) {
-    if(this.props.score > prevProps.score)
-    this.growSnake()
-    if(this.props.started && !prevProps.started)
-    this.startTheGame()
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.score > prevProps.score) this.growSnake();
+    if (this.props.started && !prevProps.started) this.startTheGame();
+    if (this.props.snakeOverlapped && !prevProps.snakeOverlapped) {
+      clearInterval(this.state.intervalId);
+
+      setTimeout(() => {
+        this.initializeCells();
+      }, 2000);
+    }
+  }
+
+  initializeCells() {
+    //initializing the board cells start
+    const { rows, columns, snake, foodPos } = this.state;
+    const totalCells = rows * columns;
+    const newPostKeyString = new Date().getTime();
+    this.cellUnits = [...Array(totalCells)].map((v, idx) => {
+      const row = Math.floor(idx / columns);
+      const column = idx % columns;
+      const foodCell = row === foodPos.row && column === foodPos.column;
+      // // console.log("Rendering", idx," Row is",row, "Column is",column);
+      return (
+        <Cell
+          row={row}
+          column={column}
+          key={idx + newPostKeyString}
+          snake={snake}
+          foodCell={foodCell}
+        />
+      );
+    });
+    //initializing the board cells end
+    this.forceUpdate();
   }
   render() {
     return (
-      <div className="main-game-board" onKeyDown={this.keyPressed} tabIndex="0" ref="theDiv">
+      <div
+        className="main-game-board"
+        onKeyDown={this.keyPressed}
+        tabIndex="0"
+        ref="theDiv"
+      >
         {this.cellUnits}
       </div>
     );
@@ -147,7 +164,7 @@ class Board extends PureComponent {
 const mapStateToProps = state => ({
   score: GameScoreSelector(state),
   snakeOverlapped: SnakeOverlappedSelector(state),
-  started:GameStartedSelector(state)
+  started: GameStartedSelector(state)
 });
 export default connect(
   mapStateToProps,

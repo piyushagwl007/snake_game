@@ -3,6 +3,12 @@ import { connect } from "react-redux";
 //actions for the game
 import { startGame, stopGame } from "../../../actions/GameActions";
 import SharedButton from "../../../shared/littleComponents/SharedButton";
+
+//selectors for the StartRestart
+import {
+  GameStartedSelector,
+  SnakeOverlappedSelector
+} from "../../../selectors/BoardGameState";
 class StartRestart extends Component {
   constructor() {
     super();
@@ -15,6 +21,13 @@ class StartRestart extends Component {
   stopTheGame() {
     this.props.stopGame();
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.snakeOverlapped && !prevProps.snakeOverlapped) {
+      setTimeout(() => {
+        this.stopTheGame();
+      }, 2000);
+    }
+  }
   render() {
     return (
       <div>
@@ -24,7 +37,11 @@ class StartRestart extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  started: GameStartedSelector(state),
+  snakeOverlapped: SnakeOverlappedSelector(state)
+});
 export default connect(
-  null,
+  mapStateToProps,
   { startGame, stopGame }
 )(StartRestart);
